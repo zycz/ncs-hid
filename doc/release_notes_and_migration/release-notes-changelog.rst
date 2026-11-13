@@ -33,7 +33,10 @@ The following sections provide detailed lists of changes by component.
 Applications
 ============
 
-|no_changes_yet_note|
+nRF Desktop
+-----------
+
+* Updated the :ref:`nrf_desktop_user_interface` section with the onboard button assignments of the mouse and keyboard configurations on nRF54 Series DKs.
 
 Host tools
 ==========
