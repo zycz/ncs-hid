@@ -9,6 +9,16 @@ CAF: Bluetooth LE state extension module
 
 The Bluetooth® LE state extension module extends the :ref:`CAF Bluetooth LE state module <nrf:caf_ble_state>` with functionality that is not yet available in the used |NCS| release.
 
+Module events
+*************
+
+.. include:: /applications/nrf_desktop/doc/event_propagation.rst
+   :start-after: table_ble_state_extension_start
+   :end-before: table_ble_state_extension_end
+
+.. note::
+   |nrf_desktop_module_event_note|
+
 Configuration
 *************
 

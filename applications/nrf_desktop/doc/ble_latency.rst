@@ -131,7 +131,7 @@ The module listens for the following SCI-related events:
 
 * :c:struct:`hid_sci_mode_request_event` - Submitted by the :ref:`nrf_desktop_hids` when the connected Bluetooth host requests an SCI mode change through the HID control point characteristic.
   The Bluetooth LE latency module requests a connection rate update that matches the requested mode.
-* :c:struct:`ble_peer_sci_conn_rate_event` - Submitted by the :ref:`nrf_desktop_ble_state` when a connection rate update completes or fails.
+* :c:struct:`ble_peer_sci_conn_rate_event` - Submitted by the :ref:`caf_ble_state_extension` when a connection rate update completes or fails.
   The Bluetooth LE latency module validates the new connection rate parameters against the requested or current SCI mode.
   If the parameters are not valid for the requested nor current mode, the module attempts to find a valid SCI mode, starting from the most restrictive mode (FAST) and ending with the least restrictive mode (FULL_RANGE).
   If no valid SCI mode is found, the module defaults to the NONE mode.
