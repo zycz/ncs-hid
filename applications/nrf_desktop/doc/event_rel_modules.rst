@@ -190,6 +190,7 @@ Sink modules for module_state_event
 * :ref:`nrf_desktop_ble_qos`
 * :ref:`nrf_desktop_ble_scan`
 * :ref:`nrf_desktop_ble_state`
+* :ref:`caf_ble_state_extension`
 * :ref:`nrf_desktop_buttons`
 * :ref:`nrf_desktop_buttons_sim`
 * :ref:`nrf_desktop_click_detector`
