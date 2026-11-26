@@ -42,6 +42,8 @@ nRF Desktop
     Enable the :option:`CONFIG_DESKTOP_BLE_STATE_APP_SPECIFIC` Kconfig option to build with the application-specific implementation instead.
   * The :option:`CONFIG_DESKTOP_CPU_LOAD_EVENT` Kconfig option.
     This option enables the :c:struct:`cpu_load_event`.
+  * The :ref:`nrf_desktop_ram_pwrdn` that powers down unused SRAM on nRF54L Series application cores (:option:`CONFIG_DESKTOP_RAM_PWRDN`).
+    The module is enabled by default on the supported SoCs.
 
 * Updated the :ref:`nrf_desktop_cpu_meas` to allow emitting the measured CPU load directly through the :ref:`nrf:nrf_profiler` API (:option:`CONFIG_DESKTOP_CPU_MEAS_RESULT_NRF_PROFILER`), which minimizes the impact on the measured CPU load.
   The option is enabled by default if the nRF Profiler (:kconfig:option:`CONFIG_NRF_PROFILER`) is enabled.
