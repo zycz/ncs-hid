@@ -1,0 +1,86 @@
+#
+# Copyright (c) 2026 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config DESKTOP_RAM_PWRDN_LIBC_MALLOC_POST_IMAGE_ARENA
+	bool
+	default (COMMON_LIBC_MALLOC && COMMON_LIBC_MALLOC_ARENA_SIZE = -1) || NEWLIB_LIBC
+	help
+	  Set if the malloc arena is placed right after the linked application
+	  image. This is the case for the common libc malloc with
+	  CONFIG_COMMON_LIBC_MALLOC_ARENA_SIZE set to -1 and for the Newlib heap
+	  on nRF54L Series SoCs. The arena then occupies the SRAM that the RAM
+	  power down module would power down.
+
+config DESKTOP_RAM_PWRDN_SOC_NRF54LS05
+	bool
+	default SOC_NRF54LS05A_CPUAPP || SOC_NRF54LS05B_CPUAPP
+	help
+	  Set on nRF54LS05. The RAM power down library does not support the SoC,
+	  so the module powers down the RAM sections directly using MEMCONF.
+
+config DESKTOP_RAM_PWRDN
+	bool "Power down unused SRAM"
+	depends on SOC_NRF54L05_CPUAPP || SOC_NRF54L10_CPUAPP || \
+		   SOC_NRF54L15_CPUAPP || SOC_NRF54LC10A_CPUAPP || \
+		   SOC_NRF54LM20A_CPUAPP || SOC_NRF54LM20B_CPUAPP || \
+		   DESKTOP_RAM_PWRDN_SOC_NRF54LS05
+	# MEMCONF can be accessed only from the secure domain.
+	depends on !BUILD_WITH_TFM
+	depends on !DESKTOP_RAM_PWRDN_LIBC_MALLOC_POST_IMAGE_ARENA
+	select RAM_POWER_DOWN_LIBRARY if !DESKTOP_RAM_PWRDN_SOC_NRF54LS05
+	# Powered down RAM sections stay off through a soft reset. The RAM power
+	# down library implies the option on other SoCs.
+	imply NRF_FORCE_RAM_ON_REBOOT if DESKTOP_RAM_PWRDN_SOC_NRF54LS05
+	help
+	  Power down unused SRAM in System ON mode after the main module is
+	  ready. The module powers down:
+
+	  - SRAM sections located after the linked application image,
+	  - the instruction cache SRAM if MCUBOOT_BOOTLOADER_MODE_RAM_LOAD is
+	    enabled (code executes from SRAM),
+	  - the USB high-speed SRAM on nRF54LM20 if USB high-speed is not used.
+
+	  The option is not available if the malloc arena is placed
+	  after the linked application image.
+
+	  On nRF54LS05, the RAM power down library is not used, because it does
+	  not support the SoC. The module controls MEMCONF directly instead.
+
+if DESKTOP_RAM_PWRDN
+
+config DESKTOP_RAM_PWRDN_USB_HS_IN_USE
+	bool
+	depends on DESKTOP_USB_ENABLE
+	default y # select by default till confirmed it is safe to power down RAM block for USB HS
+	default $(dt_nodelabel_enabled,usbhs)
+	help
+	  Set if the application uses the USB high-speed controller. The USB
+	  high-speed MEMCONF block is kept powered in that case.
+
+config DESKTOP_RAM_PWRDN_ICACHE_IN_USE
+	bool
+	default y # select by default till confirmed it is safe to power down RAM block for ICACHE
+	help
+	  Set if the application uses the instruction cache. The instruction cache
+	  MEMCONF block is kept powered in that case.
+
+config DESKTOP_RAM_PWRDN_LIMIT_TO_CPUAPP_SRAM
+	bool
+	# The cpuflpr node is deleted in the application core devicetree.
+	default $(dt_nodelabel_enabled,cpuflpr_vpr)
+	help
+	  Stop powering down SRAM at the end of the cpuapp_sram devicetree node
+	  instead of the physical end of application SRAM. On some SoCs (for
+	  example, nRF54LM20), the last RAM section extends beyond cpuapp_sram
+	  and holds the VPR context. The option is enabled by default if the
+	  FLPR core (cpuflpr_vpr) is enabled in devicetree, to keep the VPR
+	  context powered.
+
+module = DESKTOP_RAM_PWRDN
+module-str = RAM power down
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # DESKTOP_RAM_PWRDN
